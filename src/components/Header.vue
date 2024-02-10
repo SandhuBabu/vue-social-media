@@ -1,15 +1,18 @@
 <script setup>
 import {computed} from 'vue'
 import {getCurrentUser} from '@/firebase/util'
+import { RouterLink } from 'vue-router';
 
 const username = computed(() => getCurrentUser()?.displayName)
 </script>
 
 <template>
     <header class="navbar sticky-top bg-light shadow-sm">
-        <div style="width: 100%;" class="d-flex justify-content-end align-items-center pe-5 text-primary cursor-pointer">
-            <i class="bi bi-person-check me-1"></i>
-            <h6 class="fw-medium">{{ username }}</h6>
+        <div style="width: 100%;">
+            <RouterLink :to="{name: 'profile'}" style="text-decoration: none;" class="d-flex justify-content-end align-items-center pe-5 text-primary cursor-pointer">
+                <i class="bi bi-person-check me-1"></i>
+                <h6 class="fw-medium">{{ username }}</h6>
+            </RouterLink>
         </div>
     </header>
 </template>
@@ -17,6 +20,7 @@ const username = computed(() => getCurrentUser()?.displayName)
 <style scoped>
 header {
     height: 4em;
+    z-index: 9;
 }
 
 div {

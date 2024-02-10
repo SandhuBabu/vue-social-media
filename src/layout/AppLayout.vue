@@ -18,15 +18,3 @@ import Sidebar from '../components/Sidebar.vue';
     </div>
   </div>
 </template>
-
-<style scoped>
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-.fade-leave-active,
-.fade-enter-active {
-  transition: opacity 250ms linear;
-}
-</style>

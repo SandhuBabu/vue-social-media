@@ -116,7 +116,7 @@ li {
 
 li i {
     font-size: 2em;
-    color: #000;
+    color: var(--text-c1);
     cursor: pointer;
     transition: color 250ms;
 }

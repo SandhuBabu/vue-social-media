@@ -1,13 +1,10 @@
 <script setup>
-
+import ProfileCard from '../components/Profile/ProfileCard.vue';
 </script>
 
 <template>
-    <div>
-        <h1>Profile</h1>
-
-        <router-link to="/">home</router-link>
-
-        <p>Lorem1000</p>
-    </div>
+   <ProfileCard />
 </template>
+
+<style>
+</style>

@@ -1,30 +1,45 @@
 <script setup>
+import { ref } from 'vue';
 import PostCarousal from './PostCarousal.vue';
+import defaultProfilePicture  from '@/assets/images/default_profile_picture.jpg'
 
-const images = [
-    {
-        src: 'https://www.w3schools.com/html/movie.mp4',
-        type:'video'
-    },
-    {
-        src:'https://images.unsplash.com/photo-1535063130681-0fe292a3524b?auto=format&fit=crop&q=80&w=1000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwcm9maWxlLWxpa2VkfDEzfHx8ZW58MHx8fHx8',
-        type: "image"
-    },
-    {
-        src:"https://i.pinimg.com/originals/05/11/d6/0511d6b82fc3ab707378b353f5694ddb.jpg",
-        type: 'image'
-    },
-    {
-        src:"https://i.pinimg.com/736x/c2/89/33/c2893347e55a2cb5e483f5bcf9d4e590.jpg",
-        type: 'image'
+const { post } = defineProps({
+    post: {
+        type: Object,
+        required: true
     }
-]  
+})
+
+const isDescFull = ref(false)
 </script>
 
 <template>
     <article class="shadow-sm">
-        <h6>Post owner</h6>
-        <PostCarousal :posts="images" />
+        <div class="post-owner">
+            <img :src="post.owner.photoUrl ?? defaultProfilePicture" alt="">
+            <RouterLink :to="{name:'user', params: {userUid: post.owner.uid}}">
+                <h2>{{ post.owner.name }}</h2>
+            </RouterLink>
+        </div>
+        <PostCarousal :posts="post.media" />
+        <div class="action-container">
+            <i class="bi like" 
+            @click="post.isLiked = !post.isLiked"
+            :class="post.isLiked ? 'bi-suit-heart-fill' : 'bi-suit-heart'"></i>
+            <p>8743 likes</p>
+        </div>
+        <div class="description" :style="{
+            flexDirection: isDescFull?'column':'row'
+        }">
+            <p
+            :class="{full: isDescFull}"
+            >
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic, ipsam quasi quidem qui, aperiam repellendus alias in iste at error tenetur illum iure eos eum omnis quis voluptatibus ad? Inventore?
+            </p>
+            <span @click="isDescFull=!isDescFull">
+            {{ isDescFull?'less':'more' }}
+            </span>
+        </div>
     </article>
 </template>
 
@@ -33,9 +48,80 @@ article {
     width: 30em;
     max-width: 30em;
     padding: 1em;
-    background-color: rgb(244, 244, 244);
+    background-color:var(--card-c1);
 
-    @media (width <= 771px) {
+    .post-owner {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 5px;
+
+        img {
+            width: 2.5em;
+            height: 2.5em;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--text-c2);
+
+            h2 {
+                font-size: 1em;
+            }
+        }
+    }
+
+    .action-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 5px;
+
+        .like {
+            font-size: 1.5em;
+            cursor: pointer;
+
+            &.bi-suit-heart-fill {
+                color: var(--like);
+            }
+
+            &.bi-suit-heart {
+                color: var(--text-c1);
+            }
+        }
+
+        p {
+            margin: 0;
+        }
+    }
+
+    .description {
+        display: flex;
+        padding: 0 5px;
+        
+        p {
+            font-size: 14px;
+            display: -webkit-inline-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            
+            &.full {
+                display: block;
+            }
+        }
+
+        span {
+            width: max-content;
+            cursor: pointer;
+            font-size: 0.9em;
+            color: var(--text-c4);
+        }
+    }
+
+    @media (width <=771px) {
         width: 100%;
     }
 }

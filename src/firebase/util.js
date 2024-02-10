@@ -16,3 +16,7 @@ export const isAuthenticated = () => {
 export const getCurrentUser = () => {
     return auth?.currentUser
 }
+
+export const getUserProfilePicture =(uid) => {
+    return `https://firebasestorage.googleapis.com/v0/b/social-media-217e3.appspot.com/o/${uid}.jpg?alt=media`
+}

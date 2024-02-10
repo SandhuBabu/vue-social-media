@@ -12,7 +12,7 @@ const currentViewing = ref({post:posts[0], count: 0})
 
 const handleChangePost = (type) => {
   const currentIndex = currentViewing.value.count
-  if(type === "next" && currentIndex < posts.length) {
+  if(type === "next" && currentIndex < posts.length-1) {
       currentViewing.value = {
         post: posts[currentIndex+1],
         count: currentIndex+1
@@ -20,11 +20,11 @@ const handleChangePost = (type) => {
       return
   }
 
-  if(currentIndex > 0) {
-    currentViewing.value = {
-      post: posts[currentIndex - 1],
-      count: currentIndex - 1
-    }
+  if(type === "prev" && currentIndex > 0) {
+      currentViewing.value = {
+        post: posts[currentIndex - 1],
+        count: currentIndex - 1
+      }
   }
 }
 </script>
@@ -32,15 +32,10 @@ const handleChangePost = (type) => {
 <template>
   <div class="carousal ">
     <div class="posts">
-      <img
-        v-if="currentViewing.post.type==='image'"
+        <img
         :src="currentViewing.post.src" 
-        alt="post not available to show"
-      >
-      <video v-if="currentViewing.post.type === 'video'" controls>
-        <source :src="currentViewing.post.src" type="video/mp4">
-      </video>
-
+        alt="Image is not available"
+        />
       <div v-if="posts?.length>1" class="next-prev">
         <svg 
           @click="handleChangePost('prev')" 
@@ -65,12 +60,20 @@ const handleChangePost = (type) => {
         </svg>
       </div>
     </div>
-  </div>
+    <div v-if="posts.length > 1" class="post-indicator">
+      <span 
+        v-for="(_, i) in posts"
+        :class="{active: currentViewing.count === i}"
+      ></span>
+    </div>
+</div>
 </template>
 
 <style lang="scss" scoped>
 .carousal {
   max-width: 30em;
+  position: relative;
+  user-select: none;
 
    @media (width <= 771px) {
         width: 100%;
@@ -79,7 +82,8 @@ const handleChangePost = (type) => {
 
   .posts {
     width: 100%;
-    height: 35em;
+    max-height: 30em;
+    aspect-ratio: 3/4;
     overflow: hidden;
     position: relative;
     user-select: none;
@@ -87,8 +91,10 @@ const handleChangePost = (type) => {
     img {
       width: 100%;
       min-height: 30em;
-      max-height: 35em;
+      max-height: 100%;
       object-fit: cover;
+      user-select: none;
+      -webkit-user-drag: none;
     }
 
     video {
@@ -110,7 +116,7 @@ const handleChangePost = (type) => {
     padding: 0 10px;
 
     .next-prev-button {
-      fill: #ffffff9c;
+      fill: var(--white-off);
       cursor: pointer;
 
       &:hover {
@@ -122,6 +128,27 @@ const handleChangePost = (type) => {
       &.disabled:hover{
         fill: rgba(255, 255, 255, 0.268);
         cursor: not-allowed;
+      }
+    }
+  }
+
+  .post-indicator {
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    width: 100%;
+    position: absolute;
+    bottom: 7px;
+    
+    span {
+      display: block;
+      width: 5.5px;
+      height:5.5px;
+      border-radius: 50%;
+      background-color: var(--white-off);
+
+      &.active {
+        background: var(--white);
       }
     }
   }

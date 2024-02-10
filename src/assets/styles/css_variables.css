@@ -1,0 +1,32 @@
+:root {
+
+    /* like main color */
+    --like: #ff4242;
+
+
+    /* black and white */
+    --black: #000;
+    --white: #fff;
+    --white-off: #ffffff7d;
+
+
+    /* text colors */
+    --text-c1: #0f0f0f;
+    --text-c2: #515151;
+    --text-c3: #717171;
+    --text-c4: #adadad;
+
+
+    /* font-weight */
+    --font-bold: 800;
+    --font-semibold: 600;
+    --font-medium: 500;
+    --font-normal: 400;
+    --font-light: 300;
+    --font-x-light: 200;
+
+    
+    /* other colors */
+    --card-c1: #f9f9f9;
+    --backdrop-bg: #2a292992;
+}

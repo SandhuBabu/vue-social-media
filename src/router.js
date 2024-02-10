@@ -19,6 +19,11 @@ const rootRoutes = [
         path: "/profile",
         name: "profile",
         component: () => import('./views/Profile.vue')
+      },
+      {
+        path: "/:userUid",
+        name: "user",
+        component: () => import('./views/Profile.vue')
       }
     ],
   },
