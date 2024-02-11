@@ -1,20 +1,7 @@
 <script setup>
 import {ref} from 'vue'
-import {auth} from '@/firebase/config'
-import {useRouter} from 'vue-router'
-import {signOut} from 'firebase/auth'
 import PostCard from '../components/Post/PostCard.vue';
 
-const router = useRouter()
-
-const logout = () => {
-  signOut(auth).then(() => {
-    router.push({name:'login'})
-  }).catch((error) => {
-    console.log(error);
-    alert("Failed to signout")
-  });
-}
 
 const posts = ref([
   {

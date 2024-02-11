@@ -12,8 +12,10 @@ const form = ref({
 });
 
 const showPassword = ref(false);
+const buttonDisabled = ref(false)
 
 const handleLogin = async () => {
+    buttonDisabled.value=true
     if (form.value.password.length < 6)
         return error.value = "Password must contain 6 characters"
 
@@ -28,6 +30,8 @@ const handleLogin = async () => {
         if (err.code === 'auth/invalid-credential')
             return error.value = "Invalid credentials"
         return error.value = "Failed to login"
+    } finally {
+        buttonDisabled.value = false
     }
 }
 </script>
@@ -47,7 +51,20 @@ const handleLogin = async () => {
 
         <p class="text-danger fs-6">{{ error }}</p>
 
-        <button class="input-group btn btn-primary my-4">Login</button>
+        <button
+            class="input-group btn btn-primary my-4 d-flex justify-content-center align-items-center gap-2"
+            :disabled="buttonDisabled"
+        >
+            Login
+            <div 
+                v-if="buttonDisabled"
+                class="spinner-border text-light" 
+                style="width: 1.25em; height: 1.25em; border-width: 3px;" 
+                role="status"
+            >
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </button>
 
         <p>
             <span>Not registered?</span>

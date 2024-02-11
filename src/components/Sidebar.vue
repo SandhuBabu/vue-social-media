@@ -2,6 +2,7 @@
 import { auth } from '@/firebase/config'
 import { useRouter } from 'vue-router'
 import { signOut } from 'firebase/auth'
+import SidebarSearchOffCanvas from '../components/Common/SidebarSearchOffCanvas.vue'
 
 const router = useRouter()
 
@@ -21,7 +22,7 @@ const logout = () => {
 
 <template>
     <nav class="shadow">
-        <h1>LOGO</h1>
+        <h1 class="my-3">SoMe</h1>
         <ul>
             <li data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Home">
                 <router-link :to="{ name: 'home' }">
@@ -29,12 +30,14 @@ const logout = () => {
                 </router-link>
             </li>
             <li>
-                <router-link :to="{ name: 'home' }">
-                    <i class="bi bi-search"></i>
-                </router-link>
+                <i 
+                    class="bi bi-search" type="button" 
+                    data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" 
+                    aria-controls="offcanvasWithBothOptions"
+                ></i>
             </li>
             <li>
-                <router-link :to="{ name: 'home' }">
+                <router-link :to="{ name: 'addPost' }">
                     <i class="bi bi-patch-plus-fill"></i>
                 </router-link>
             </li>
@@ -84,9 +87,12 @@ const logout = () => {
             </div>
         </div>
     </div>
+
+    <SidebarSearchOffCanvas />
+
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 nav {
     width: 5em;
     height: 100vh;
@@ -124,6 +130,16 @@ li i {
 li i:hover {
     color: var(--bs-blue);
 }
+
+
+li {
+    .router-link-exact-active {
+        i {
+            color: var(--bs-blue);
+        }
+    }
+}
+
 
 .dropdown-menu-icon {
     border: none;

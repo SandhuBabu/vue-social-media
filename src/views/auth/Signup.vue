@@ -3,6 +3,7 @@ import { ref } from "vue";
 import {createUserWithEmailAndPassword,updateProfile} from 'firebase/auth'
 import {auth} from '@/firebase/config'
 import {useRouter} from 'vue-router'
+import { createNewUserInDB } from '@/firebase/services'
 
 const router = useRouter();
 const form = ref({
@@ -11,10 +12,12 @@ const form = ref({
   password: "",
   confirmPassword: "",
 });
+const buttonDisabled = ref(false)
 const error = ref('')
 const showPassword = ref(false);
 
 const handleSubmit = async () => {
+  buttonDisabled.value = true
     try {
         await createUserWithEmailAndPassword(
             auth, 
@@ -24,6 +27,7 @@ const handleSubmit = async () => {
         await updateProfile(auth.currentUser, {
             displayName: form.value.displayName
         })
+        await createNewUserInDB(auth.currentUser.uid, form.value.displayName, form.value.email)
         router.push({name:'home'})
     } catch (err) {
         console.log(err.code);
@@ -32,6 +36,8 @@ const handleSubmit = async () => {
         if(err.code === 'auth/invalid-email')
             return error.value = 'Invalid email address'
         error.value = "Failed to register"        
+    } finally {
+      buttonDisabled.value = false
     }
 };
 
@@ -44,7 +50,6 @@ const validate = () => {
 
     if (form.value.password.length < 6)
         return error.value = "password must contain atleast 6 characters"
-
     handleSubmit()
 };
 </script>
@@ -106,8 +111,19 @@ const validate = () => {
 
     <p class="text-danger fs-6">{{error}}</p>
     
-    <button class="input-group btn btn-primary my-4">
+    <button 
+      class="input-group btn btn-primary my-4 d-flex justify-content-center align-items-center gap-2"
+      :disabled="buttonDisabled"
+    >
         Register
+        <div 
+            v-if="buttonDisabled"
+            class="spinner-border text-light" 
+            style="width: 1.25em; height: 1.25em; border-width: 3px;" 
+            role="status"
+        >
+            <span class="visually-hidden">Loading...</span>
+        </div>
     </button>
 
     <p>

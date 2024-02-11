@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import { isAuthenticated } from '@/firebase/util'
+import { isAuthenticated, getCurrentUser } from '@/firebase/util'
 
 const rootRoutes = [
   {
@@ -24,6 +24,11 @@ const rootRoutes = [
         path: "/:userUid",
         name: "user",
         component: () => import('./views/Profile.vue')
+      },
+      {
+        path: "/addPost",
+        name: "addPost",
+        component: () => import('./views/AddPost.vue')
       }
     ],
   },
@@ -57,11 +62,15 @@ export const router = createRouter({
   history: createWebHistory(),
 });
 
-router.beforeEach(async (to, from) => {
+router.beforeEach(async (to) => {
   try {
     const isAuth = await isAuthenticated();
 
     if (isAuth && to.meta.authRequired) {
+      if(to.name === "user") {
+        if (getCurrentUser().uid === to.params.userUid)
+          return {name: "profile"}
+      }
       return true
     }
 
