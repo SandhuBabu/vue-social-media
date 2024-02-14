@@ -1,10 +1,13 @@
 <script setup>
+import {ref} from 'vue'
 import { auth } from '@/firebase/config'
 import { useRouter } from 'vue-router'
 import { signOut } from 'firebase/auth'
 import SidebarSearchOffCanvas from '../components/Common/SidebarSearchOffCanvas.vue'
+import NotificationList from './Common/NotificationList.vue'
 
 const router = useRouter()
+const isNotificationVisible = ref(false)
 
 const logout = () => {
     signOut(auth).then(() => {
@@ -30,11 +33,8 @@ const logout = () => {
                 </router-link>
             </li>
             <li>
-                <i 
-                    class="bi bi-search" type="button" 
-                    data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions" 
-                    aria-controls="offcanvasWithBothOptions"
-                ></i>
+                <i class="bi bi-search" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions"
+                    aria-controls="offcanvasWithBothOptions"></i>
             </li>
             <li>
                 <router-link :to="{ name: 'addPost' }">
@@ -42,11 +42,18 @@ const logout = () => {
                 </router-link>
             </li>
             <li>
-                <router-link :to="{ name: 'home' }" class="position-relative">
-                    <i class="bi bi-bell-fill"></i>
-                    <span class="position-absolute p-1 bg-danger rounded-circle notification">
+                <button 
+                    class="btn position-relative" 
+                    style="border: none; box-shadow: none !important;"
+                    @click="isNotificationVisible = !isNotificationVisible"
+                >
+                    <i 
+                        class="bi bi-bell-fill"
+                        :class="{active: isNotificationVisible}"
+                    ></i>
+                    <span class="position-absolute p-1 bg-danger rounded-circle notification-status">
                     </span>
-                </router-link>
+                </button>
             </li>
             <li>
                 <router-link :to="{ name: 'profile' }">
@@ -80,7 +87,7 @@ const logout = () => {
                     <h1 class="modal-title fs-5">Are you sure to logout?</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-danger" @click="logout">Logout</button>
                 </div>
@@ -88,8 +95,13 @@ const logout = () => {
         </div>
     </div>
 
+    <transition mode="out-in" name="slide">
+        <NotificationList 
+            v-if="isNotificationVisible"
+            @changeVisibility="isNotificationVisible = !isNotificationVisible"
+         />
+    </transition>
     <SidebarSearchOffCanvas />
-
 </template>
 
 <style scoped lang="scss">
@@ -133,7 +145,14 @@ li i:hover {
 
 
 li {
-    .router-link-exact-active {
+    button {
+        i {
+            &.active {
+                color: var(--bs-blue);
+            }
+        }
+    }
+    .active {
         i {
             color: var(--bs-blue);
         }
@@ -146,8 +165,23 @@ li {
     background: transparent;
 }
 
-.notification {
-    top: 8px;
-    right: -2px;
+.notification-status {
+    top: 12px;
+    right: 10px;
 }
+
+
+
+.slide-enter-from {
+    transform: translateX(-10em);
+}
+
+.slide-enter-active {
+  transition: transform 250ms linear;
+}
+
+.slide-leave-active {
+    transition: opacity 300ms linear;
+}
+
 </style>

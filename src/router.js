@@ -60,6 +60,7 @@ const authRoutes = [
 export const router = createRouter({
   routes: [...rootRoutes, ...authRoutes],
   history: createWebHistory(),
+  linkExactActiveClass: 'active'
 });
 
 router.beforeEach(async (to) => {

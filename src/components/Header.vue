@@ -10,8 +10,9 @@ const user = computed(() => getCurrentUser())
     <header class="navbar sticky-top bg-light shadow-sm">
 
         <a 
+                style="z-index: -1;"
             target="_blank" 
-            class="d-block ms-2" 
+            class="d-block ms-2 z-0" 
             href="https://console.firebase.google.com/u/2/project/social-media-217e3/"
         >Go to Firebase console</a>
 
