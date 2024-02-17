@@ -6,9 +6,11 @@ import {
     updateDoc, 
     where,
     arrayUnion, 
-    arrayRemove
+    arrayRemove,
+    serverTimestamp
 } from "firebase/firestore";
 import { db } from "./config";
+import { NEW_FOLLOWER } from "./enums";
 
 
 export const searchUsers = async (searchQuery) => {
@@ -55,6 +57,11 @@ const follow = async (currentUserRef, userRef, currentUserUid, userUid) => {
         await updateDoc(userRef, {
             followers: arrayUnion(currentUserUid)
         })
+        await addNotification(userUid, {
+            type: NEW_FOLLOWER,
+            title: 'A new follower added to list',
+            userId: currentUserUid
+        })
         return { error: false }
     } catch (error) {
         console.log(error);
@@ -78,4 +85,11 @@ const unfollow = async (currentUserRef, userRef, currentUserUid, userUid) => {
         console.log(error);
         return { error: true }
     }
+}
+
+export const addNotification = async (userUid, notification) => {
+    const userRef = doc(db, "users", userUid);
+    return await updateDoc(userRef, {
+        'notifications.unread': arrayUnion({...notification, timestamp: new Date()})
+    })
 }
