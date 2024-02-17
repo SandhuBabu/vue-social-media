@@ -15,10 +15,6 @@ const handlegetUserData = async (uid) => {
       currentUser.value = data
 }
 
-// onBeforeMount(() => {
-//    handlegetUserData()
-// })
-
 watchEffect(() => {
    if(route.params.userUid) {
       handlegetUserData(route.params.userUid)
@@ -26,8 +22,6 @@ watchEffect(() => {
       handlegetUserData(getCurrentUser().uid)
    }
 })
-
-// watch(() => route.params, () => handlegetUserData, {deep: true})
 </script>
 
 <template>

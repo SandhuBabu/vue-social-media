@@ -5,7 +5,7 @@ export const isAuthenticated = () => {
     return new Promise((resolve, reject) => {
         onAuthStateChanged(auth, (user) => {
             if (user) {
-               resolve(true)
+               resolve(user)
             } else {
                 reject(false)
             }

@@ -39,22 +39,6 @@ export const updateUserProfile = async (profileOptions) => {
     try {
         await updateProfile(auth.currentUser, profileOptions)
         await setDoc(doc(db, 'users', auth.currentUser.uid), profileOptions, { merge: true });
-        // if(profileOptions?.displayName && profileOptions?.photoURL) {
-        //     await setDoc(
-        //         doc(db, 'users', auth.currentUser.uid), 
-        //         { 
-        //             displayName: profileOptions.displayName,
-        //             photoURL: profileOptions.photoURL
-        //         },
-        //         { merge: true }
-        //     );
-        // }
-        // else if(profileOptions?.displayName ) {
-        //     await setDoc(doc(db, 'users', auth.currentUser.uid), { displayName: profileOptions.displayName }, { merge: true });
-        // }
-        // else if (profileOptions?.photoURL) {
-        //     await setDoc(doc(db, 'users', auth.currentUser.uid), { photoURL: profileOptions.photoURL }, { merge: true });
-        // }
     } catch (err) {
         console.log("Failed to update user profile");
     }

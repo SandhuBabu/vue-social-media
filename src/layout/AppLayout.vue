@@ -9,7 +9,7 @@ import Sidebar from '../components/Sidebar.vue';
     <Sidebar />
     <div style="flex: 1;">
       <Header />
-      <div class="container pt-5 ps-5">
+      <div class="container pt-5 ps-3">
         <router-view v-slot="{ Component }">
           <transition name="fade" mode="out-in">
             <component :is="Component" />

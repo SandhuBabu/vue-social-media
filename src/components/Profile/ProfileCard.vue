@@ -1,5 +1,5 @@
 <script setup>
-import {ref} from 'vue'
+import {ref, computed} from 'vue'
 import defaultProfilePicture from '@/assets/images/default_profile_picture.jpg'
 import { 
     uploadImageFile, 
@@ -8,21 +8,32 @@ import {
 } from '@/firebase/services'
 import { getCurrentUser } from '@/firebase/util'
 import { useToast } from 'vue-toast-notification';
+import { useUserStore } from '@/store/userStore'
 import Modal from '../Common/Modal.vue';
+import FollowFollowingButtons from './FollowFollowingButtons.vue';
 
 
- const { userData } = defineProps({
+// for searched user
+const { userData } = defineProps({
     userData: {
         type:[Object, null],
         required: true
     }
 })
 
+const { user:storeUser, setFollowings } = useUserStore();
 
 const toast = useToast();
 const profilePictureRef = ref(null)
 const showModal = ref(false)
 const currentUser = getCurrentUser()
+
+const isFollowing = computed(() => {
+    if(userData.uid === currentUser.uid) return null
+    return storeUser.following
+        .find((uid) => uid === userData.uid) ? true : false
+})
+
 
 const handleAddProfile = async ({ target: { files } }) => {
     if(currentUser.uid !== userData.uid) return
@@ -57,6 +68,14 @@ const deleteProfilePicture = async () => {
     await updateUserProfile({photoURL: ''})
 }
 
+const handleFollow = (uid) => {
+    setFollowings([...storeUser.following, uid])
+}
+
+const handleUnFollow = (uid) => {
+    const newList = storeUser.following.filter(id => id!==uid)
+    setFollowings(newList)
+}
 </script>
 
 <template>
@@ -82,7 +101,7 @@ const deleteProfilePicture = async () => {
                </div>
             </template>
         </Modal>
-        <div class="position-relative" style="width: max-content;">
+        <div class="position-relative profile-pic-container" >
             <img 
                 :src="userData.photoURL? userData.photoURL:defaultProfilePicture" 
                 ref="profilePictureRef"
@@ -91,7 +110,17 @@ const deleteProfilePicture = async () => {
             />
         </div>
         <div class="profile-info p-3">
-            <h3 class="text-capitalize">{{ userData.displayName }}</h3>
+            <div class="d-flex">
+                <h3 class="text-capitalize">{{ userData.displayName }}</h3>
+                 <FollowFollowingButtons
+                    v-if="userData.uid !== currentUser.uid"
+                    :isFollowing="isFollowing"
+                    :currentUserUid="currentUser.uid"
+                    :userUid="userData.uid" 
+                    @follow="handleFollow"
+                    @unfollow="handleUnFollow"
+                />
+            </div>
             <div class="mt-2">
                 <p><span>{{ userData.totalPosts }}</span> Posts</p>
                 <p><span>{{ userData.following.length }}</span> Followers</p>
@@ -107,15 +136,24 @@ const deleteProfilePicture = async () => {
         flex-direction: column;
     } 
 
-    img {
-        width: 12em;
-        height: 12em;
-        object-fit: cover;
-        border-radius: 50%;
-        -webkit-user-drag: none;
-        user-select: none;
-        cursor: pointer;
+    .profile-pic-container {
+        @media(width < 771px) {
+            width: 100%;
+            display: grid;
+            place-items: center;
+        }
+
+        img {
+            width: 12em;
+            height: 12em;
+            object-fit: cover;
+            border-radius: 50%;
+            -webkit-user-drag: none;
+            user-select: none;
+            cursor: pointer;
+        }
     }
+
 
     .profile-info {
         flex: 1;
